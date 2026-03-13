@@ -34,6 +34,8 @@ export default function AuthPage() {
 // In your register submit handler on app/auth/page.tsx
 // Replace the existing handleRegister function with this:
 
+// Replace handleRegister in app/auth/page.tsx with this:
+
 async function handleRegister(e: React.FormEvent) {
   e.preventDefault();
   setLoading(true);
@@ -48,7 +50,11 @@ async function handleRegister(e: React.FormEvent) {
   const res = await fetch("/api/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: fields.name, email: fields.email, password: fields.password }),
+    body: JSON.stringify({
+      name: fields.name,
+      email: fields.email,
+      password: fields.password,
+    }),
   });
 
   const data = await res.json();
@@ -59,7 +65,10 @@ async function handleRegister(e: React.FormEvent) {
     return;
   }
 
-  router.push(`/verify?email=${encodeURIComponent(fields.email)}&password=${encodeURIComponent(fields.password)}`);
+  // Redirect with email + token only — no password in URL
+  router.push(
+    `/verify?email=${encodeURIComponent(fields.email)}&token=${encodeURIComponent(data.token)}`
+  );
 }
 
   return (
