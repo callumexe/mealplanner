@@ -1,14 +1,13 @@
 "use client";
 
 import { Suspense, useState, useRef, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 function VerifyForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
-  const password = searchParams.get("password") ?? "";
+  const loginToken = searchParams.get("token") ?? "";
 
   const [digits, setDigits] = useState(["", "", "", "", "", ""]);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
@@ -48,6 +47,7 @@ function VerifyForm() {
     setStatus("loading");
     setError("");
 
+    // Step 1: Verify the code
     const res = await fetch("/api/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -64,9 +64,10 @@ function VerifyForm() {
 
     setStatus("success");
 
+    // Step 2: Sign in using the loginToken (no password needed)
     await signIn("credentials", {
       email,
-      password,
+      loginToken,
       callbackUrl: "/dashboard",
     });
   }
