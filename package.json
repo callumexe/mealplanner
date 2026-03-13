@@ -19,7 +19,7 @@
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "lucide-react": "0.105.0-alpha.4",
-    "mongoose": "^9.3.0",
+    "mongoose": "^7.6.3",
     "next": "^14.2.35",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.2.1",
