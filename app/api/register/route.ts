@@ -1,6 +1,7 @@
 // app/api/register/route.ts
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { Resend } from "resend";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
@@ -102,7 +103,6 @@ export async function POST(req: Request) {
   if (!name || !email || !password)
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
-  // Normalise email consistently
   const normalisedEmail = email.toLowerCase().trim();
 
   await connectDB();
@@ -114,13 +114,19 @@ export async function POST(req: Request) {
   const code = generateCode();
   const expiry = new Date(Date.now() + 15 * 60 * 1000);
 
+  // Generate a secure login token (used after verification instead of password)
+  const loginToken = crypto.randomBytes(32).toString("hex");
+  const loginTokenExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 min
+
   await User.create({
     name,
-    email: normalisedEmail, // always save lowercase
+    email: normalisedEmail,
     password: hashed,
     verified: false,
     verifyCode: code,
     verifyCodeExpiry: expiry,
+    loginToken,
+    loginTokenExpiry,
   });
 
   await resend.emails.send({
@@ -130,5 +136,9 @@ export async function POST(req: Request) {
     html: verifyEmail(name, code),
   });
 
-  return NextResponse.json({ message: "Check your email for a verification code" }, { status: 201 });
+  // Only email and token in URL — no password
+  return NextResponse.json({
+    message: "Check your email for a verification code",
+    token: loginToken,
+  }, { status: 201 });
 }
