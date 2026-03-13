@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema(
     verifyCodeExpiry: { type: Date, default: null },
     loginToken:       { type: String, default: null },
     loginTokenExpiry: { type: Date, default: null },
+    role:             { type: String, enum: ["user", "admin"], default: "user" },
   },
   { timestamps: true }
 );
