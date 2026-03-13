@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-export default function VerifyPage() {
+function VerifyForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
-  const password = searchParams.get("password") ?? ""; // passed from register
+  const password = searchParams.get("password") ?? "";
 
   const [digits, setDigits] = useState(["", "", "", "", "", ""]);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
@@ -20,7 +20,7 @@ export default function VerifyPage() {
   }, []);
 
   function handleChange(index: number, value: string) {
-    if (!/^\d*$/.test(value)) return; // numbers only
+    if (!/^\d*$/.test(value)) return;
     const newDigits = [...digits];
     newDigits[index] = value.slice(-1);
     setDigits(newDigits);
@@ -64,7 +64,6 @@ export default function VerifyPage() {
 
     setStatus("success");
 
-    // Auto sign in after verification
     await signIn("credentials", {
       email,
       password,
@@ -113,9 +112,7 @@ export default function VerifyPage() {
               onChange={(e) => handleChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               className={`w-full aspect-square text-center text-xl bg-[#111] border transition-colors outline-none font-mono text-[#d4af37] ${
-                d
-                  ? "border-[#d4af37]"
-                  : "border-[#1e1e1e] focus:border-[#d4af37]"
+                d ? "border-[#d4af37]" : "border-[#1e1e1e] focus:border-[#d4af37]"
               }`}
             />
           ))}
@@ -138,10 +135,22 @@ export default function VerifyPage() {
         </button>
 
         <p className="text-[0.6rem] text-[#2a2a2a] text-center">
-          Didn't receive it? Check your spam folder. The code expires in 15 minutes.
+          Didn&apos;t receive it? Check your spam folder. The code expires in 15 minutes.
         </p>
 
       </div>
     </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="w-6 h-6 border border-[#d4af37] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <VerifyForm />
+    </Suspense>
   );
 }
