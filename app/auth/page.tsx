@@ -318,7 +318,7 @@ async function handleRegister(e: React.FormEvent) {
               <form key="register" className="fade-in" onSubmit={handleRegister}>
                 <div className="field">
                   <label>Name</label>
-                  <input type="text" placeholder="Jane Smith" value={fields.name} onChange={set("name")} required />
+                  <input type="text" placeholder="Your Name" value={fields.name} onChange={set("name")} required />
                 </div>
                 <div className="field">
                   <label>Email</label>
