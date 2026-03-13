@@ -1,0 +1,168 @@
+:root {
+  --bg: #faf8f3;
+  --panel: #f3efe7;
+  --text: #1a1a1a;
+  --muted-1: #6a665e;
+  --muted-2: #7c776e;
+  --muted-3: #9a958c;
+  --border-1: #e0ddd6;
+  --border-2: #cfcac2;
+  --gold: #d4af37;
+}
+
+/* Layout */
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "DM Mono", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+}
+
+.brandBox {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--gold);
+  display: grid;
+  place-items: center;
+  font-family: "DM Serif Display", serif;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.brandText {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--muted-2);
+  text-transform: uppercase;
+}
+
+/* Header */
+.eyebrow {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 20px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.title {
+  font-family: "DM Serif Display", serif;
+  font-style: italic;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.body {
+  font-size: 0.75rem;
+  color: var(--muted-1);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.email {
+  color: var(--text);
+}
+
+/* Code input grid */
+.codeGrid {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.codeInput {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  text-align: center;
+  font-size: 1.4rem;
+  background: #f0ede7;
+  border: 1px solid var(--border-2);
+  color: var(--gold);
+  outline: none;
+}
+
+.codeInput:focus {
+  border-color: var(--gold);
+}
+
+/* Error */
+.error {
+  font-size: 0.7rem;
+  color: #c0392b;
+  border-left: 2px solid #c0392b;
+  padding-left: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Button */
+.button {
+  width: 100%;
+  background: var(--gold);
+  color: var(--bg);
+  padding: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  cursor: pointer;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.button:hover {
+  background: #e8c84a;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Footer note */
+.footerNote {
+  font-size: 0.6rem;
+  color: var(--muted-3);
+  text-align: center;
+}
+
+/* Spinner for Suspense fallback */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--gold);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
