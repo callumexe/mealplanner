@@ -4,6 +4,7 @@
     "react/no-unescaped-entities": "off",
     "tailwindcss/classnames-order": "off",
     "tailwindcss/enforces-shorthand": "off",
-    "@next/next/no-img-element": "off"
+    "@next/next/no-img-element": "off",
+    "@next/next/no-html-link-for-pages": "off"
   }
 }
