@@ -9,8 +9,11 @@ const UserSchema = new mongoose.Schema(
     verified:         { type: Boolean, default: false },
     verifyCode:       { type: String, default: null },
     verifyCodeExpiry: { type: Date, default: null },
+    loginToken:       { type: String, default: null },
+    loginTokenExpiry: { type: Date, default: null },
   },
   { timestamps: true }
 );
 
-export const User = mongoose.model("User", UserSchema);
+// @ts-ignore
+export const User = mongoose.models.User || mongoose.model("User", UserSchema);
