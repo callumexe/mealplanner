@@ -14,25 +14,13 @@ export async function POST(req: Request) {
 
   await connectDB();
 
-  // Use .select("+verifyCode +verifyCodeExpiry") to ensure fields are returned
-  const user = await User.findOne({ email: normalisedEmail }).select(
-    "verified verifyCode verifyCodeExpiry"
-  );
+  const user = await User.findOne({ email: normalisedEmail }) as any;
 
   if (!user)
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
 
   if (user.verified)
     return NextResponse.json({ message: "Already verified" }, { status: 200 });
-
-  // Log everything so we can debug
-  console.log("=== VERIFY DEBUG ===");
-  console.log("stored code:", JSON.stringify(user.verifyCode));
-  console.log("received code:", JSON.stringify(trimmedCode));
-  console.log("expiry:", user.verifyCodeExpiry);
-  console.log("now:", new Date());
-  console.log("expired?", !user.verifyCodeExpiry || new Date() > user.verifyCodeExpiry);
-  console.log("====================");
 
   if (!user.verifyCode)
     return NextResponse.json({ error: "No verification code found — please register again" }, { status: 400 });
@@ -43,11 +31,42 @@ export async function POST(req: Request) {
   if (!user.verifyCodeExpiry || new Date() > user.verifyCodeExpiry)
     return NextResponse.json({ error: "Code has expired — please register again" }, { status: 400 });
 
-  // Mark verified and clear code
   await User.updateOne(
     { email: normalisedEmail },
-    { $set: { verified: true }, $unset: { verifyCode: "", verifyCodeExpiry: "" } }
+    {
+      $set: { verified: true },
+      $unset: { verifyCode: "", verifyCodeExpiry: "" },
+    }
   );
 
   return NextResponse.json({ message: "Email verified" }, { status: 200 });
+}
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const token = searchParams.get("token");
+  const email = searchParams.get("email");
+
+  if (!token || !email)
+    return NextResponse.json({ error: "Missing token or email" }, { status: 400 });
+
+  await connectDB();
+
+  const user = await User.findOne({ email: email.toLowerCase().trim() }) as any;
+
+  if (!user)
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  if (user.loginToken !== token)
+    return NextResponse.json({ error: "Invalid token" }, { status: 400 });
+
+  if (!user.loginTokenExpiry || new Date() > user.loginTokenExpiry)
+    return NextResponse.json({ error: "Token expired" }, { status: 400 });
+
+  await User.updateOne(
+    { email: email.toLowerCase().trim() },
+    { $unset: { loginToken: "", loginTokenExpiry: "" } }
+  );
+
+  return NextResponse.json({ email: user.email, verified: true }, { status: 200 });
 }
